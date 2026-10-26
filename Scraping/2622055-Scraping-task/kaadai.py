@@ -46,17 +46,13 @@ print(f"ステータスコード：{res.status_code}")
 
 html_soup = BeautifulSoup(res.content, 'html.parser')
 
-# <title>がない場合や .string が None の場合に備えて、空文字にしておく
 if html_soup.title is not None and html_soup.title.string is not None:
-    # split()で空白・改行ごとに区切り、' '.join()で1つの空白でつなぎ直す
-    # （タイトル内の改行や連続した空白を整理する）
     title = ' '.join(html_soup.title.string.split())
 else:
     title = ''
 print(f"タイトル：{title}")
 
-# ページ内のリンクを集め、同一ドメインのものだけリストにする
-# 見つけたURLを貯めるための空のリスト
+# 同一ドメインのものだけリストにする
 link_list = []
 for a in html_soup.find_all('a', href=True): 
  #href属性を持つ<a>タグだけをnext_urlとして置き換えた
@@ -89,9 +85,9 @@ def is_target_url(url):
         return False
     return True
 
-sitemap = {}               # 結果：{URL: タイトル}　# 空の辞書を作る
-to_visit = [START_URL]     # これから訪問するURLのリスト（待ち行列）# 辞書にデータを追加する、ページにアクセスしてタイトルを取得したら、辞書に次々と追加されていく
-found = {START_URL}        # 一度でも待ち行列に入れたURLの集合（重複防止）# 中身を確認する
+sitemap = {}               # 空の辞書を作る
+to_visit = [START_URL]    
+found = {START_URL}        # 中身を確認する
 
 # 待ち行列が空になるまで繰り返す
 while to_visit:
